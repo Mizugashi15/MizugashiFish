@@ -1,0 +1,7 @@
+name: MizugashiFish
+version: '1.0'
+main: net.mizugashi.mizugashiFish.MizugashiFish
+api-version: '1.20'
+authors: [ Mizugashi15 ]
+commands:
+  fish:
