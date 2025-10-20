@@ -44,7 +44,6 @@ public final class MizugashiFish extends JavaPlugin {
 
         File file = new File(plugin.getDataFolder().getPath() + "/fish.yml");
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-
         for (String rarity : config.getKeys(false)) {
             for (String fish_name : Objects.requireNonNull(config.getConfigurationSection(rarity)).getKeys(false)) {
                 switch (rarity) {
