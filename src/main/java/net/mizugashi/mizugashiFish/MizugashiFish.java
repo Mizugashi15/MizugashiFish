@@ -5,7 +5,9 @@ import net.mizugashi.mizugashiFish.data.FishSetting;
 import net.mizugashi.mizugashiFish.data.RodData;
 import net.mizugashi.mizugashiFish.data.RodSetting;
 import net.mizugashi.mizugashiFish.events.Fishing;
+import net.mizugashi.mizugashiFish.events.Sell;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,19 +29,28 @@ public final class MizugashiFish extends JavaPlugin {
     public static List<FishData> super_list = new ArrayList<>();
     public static List<FishData> legend_list = new ArrayList<>();
     public static HashMap<String, RodData> rod_map= new HashMap<>();
+    public static NamespacedKey key_rod_name;
+    public static NamespacedKey key_fish;
+    public static NamespacedKey key_fish_price;
     public static int common_chance;
     public static int uncommon_chance;
     public static int rare_chance;
     public static int super_chance;
     public static int legend_chance;
+    public static boolean contest;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
         plugin = this;
         vault = new VaultManager(plugin);
+        key_rod_name = new NamespacedKey(plugin, "rod_name");
+        key_fish = new NamespacedKey(plugin, "fish_name");
+        key_fish_price = new NamespacedKey(plugin, "fish_price");
         Objects.requireNonNull(getCommand("fish")).setExecutor(new MainCommand());
         Bukkit.getPluginManager().registerEvents(new Fishing(), plugin);
+        Bukkit.getPluginManager().registerEvents(new Sell(), plugin);
+        contest = false;
         plugin.getDataFolder().mkdir();
 
         File file = new File(plugin.getDataFolder().getPath() + "/fish.yml");

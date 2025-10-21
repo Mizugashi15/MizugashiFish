@@ -4,18 +4,18 @@ import java.util.List;
 
 public class RodData {
 
-    String name;
+    public String name;
 
-    String display_name;
+    public String display_name;
 
-    List<String> lore;
+    public List<String> lore;
 
-    int common;
-    int uncommon;
-    int rare;
-    int super_rare;
-    int legend;
+    public int common;
+    public int uncommon;
+    public int rare;
+    public int super_rare;
+    public int legend;
 
-    int all_chance;
+    public int all_chance;
 
 }

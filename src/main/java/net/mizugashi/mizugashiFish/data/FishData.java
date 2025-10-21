@@ -4,26 +4,26 @@ import java.util.List;
 
 public class FishData {
 
-    String name;
+    public String name;
 
-    String type;
+    public String type;
 
-    String display_name;
+    public String display_name;
 
-    int custom_model_data;
+    public int custom_model_data;
 
-    List<String> lore;
+    public List<String> lore;
 
-    double length_min;
-    double length_max;
+    public double length_min;
+    public double length_max;
 
-    double price_min;
-    double price_max;
+    public double price_min;
+    public double price_max;
 
-    boolean announce;
+    public boolean announce;
 
-    boolean firework;
+    public boolean firework;
 
-    int chance;
+    public int chance;
 
 }
