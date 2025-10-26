@@ -19,32 +19,32 @@ public class FishSetting {
 
         data.name = fish_name;
 
-        data.type = section.getString("Type");
+        data.type = section.getString(fish_name + ".Type");
 
-        data.display_name = section.getString("Displayname");
+        data.display_name = section.getString(fish_name + ".Displayname");
 
-        data.custom_model_data = section.getInt("CustomModelData");
+        data.lore = section.getStringList(fish_name + ".Lore");
 
-        data.lore = section.getStringList("Lore");
+        data.custom_model_data = section.getInt(fish_name + ".CustomModelData");
 
-        data.length_min = section.getInt("Length.min");
-        data.length_max = section.getInt("Length.max");
+        data.length_min = section.getInt(fish_name + ".Length.min");
+        data.length_max = section.getInt(fish_name + ".Length.max");
 
-        data.price_min = section.getInt("Price.min");
-        data.price_max = section.getInt("Price.max");
+        data.price_min = section.getInt(fish_name + ".Price.min");
+        data.price_max = section.getInt(fish_name + ".Price.max");
 
-        data.announce = section.getBoolean("Announce");
+        data.announce = section.getBoolean(fish_name + ".Announce");
 
-        data.firework = section.getBoolean("Firework");
+        data.firework = section.getBoolean(fish_name + ".Firework");
 
-        data.chance = section.getInt("Chance");
+        data.chance = section.getInt(fish_name + ".Chance");
 
         switch (rarity) {
-            case "common" -> common_chance += section.getInt("Chance");
-            case "uncommon" -> uncommon_chance += section.getInt("Chance");
-            case "rare" -> rare_chance += section.getInt("Chance");
-            case "super_rare" -> super_chance += section.getInt("Chance");
-            case "legend" -> legend_chance += section.getInt("Chance");
+            case "common" -> common_chance += section.getInt(fish_name + ".Chance");
+            case "uncommon" -> uncommon_chance += section.getInt(fish_name + ".Chance");
+            case "rare" -> rare_chance += section.getInt(fish_name + ".Chance");
+            case "super_rare" -> super_chance += section.getInt(fish_name + ".Chance");
+            case "legend" -> legend_chance += section.getInt(fish_name + ".Chance");
         }
 
         return data;

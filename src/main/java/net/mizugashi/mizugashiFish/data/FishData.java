@@ -10,9 +10,9 @@ public class FishData {
 
     public String display_name;
 
-    public int custom_model_data;
-
     public List<String> lore;
+
+    public int custom_model_data;
 
     public double length_min;
     public double length_max;

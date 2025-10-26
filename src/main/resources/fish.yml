@@ -1,0 +1,62 @@
+common:
+  cod:
+    Type: 'COD'
+    Displayname: 'タラ'
+    CustomModelData: 0
+    Length:
+      min: 30
+      max: 50
+    Price:
+      min: 30
+      max: 50
+    Announce: false
+    Firework: false
+    Chance: 1
+uncommon:
+  salmon:
+    Type: 'SALMON'
+    Displayname: '§aサーモン'
+    CustomModelData: 0
+    Length:
+      min: 45
+      max: 80
+    Price:
+      min: 45
+      max: 80
+    Chance: 1
+rare:
+  hugu:
+    Type: 'PUFFERFISH'
+    Displayname: '§bフグ'
+    CustomModelData: 0
+    Length:
+      min: 20
+      max: 30
+    Price:
+      min: 100
+      max: 120
+    Chance: 1
+super_rare:
+  kumanomi:
+    Type: 'TROPICAL_FISH'
+    Displayname: '§5クマノミ'
+    CustomModelData: 0
+    Length:
+      min: 10
+      max: 20
+    Price:
+      min: 150
+      max: 170
+    Chance: 1
+legend:
+  ryugu:
+    Type: 'STICK'
+    Displayname: '§cリュウグウノツカイ'
+    CustomModelData: 0
+    Length:
+      min: 100
+      max: 300
+    Price:
+      min: 200
+      max: 300
+    Chance: 1

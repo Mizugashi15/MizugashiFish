@@ -6,10 +6,13 @@ import net.mizugashi.mizugashiFish.data.RodData;
 import net.mizugashi.mizugashiFish.data.RodSetting;
 import net.mizugashi.mizugashiFish.events.Fishing;
 import net.mizugashi.mizugashiFish.events.Sell;
+import net.mizugashi.mizugashiFish.utils.TabCompleter;
+import net.mizugashi.mizugashiFish.utils.VaultManager;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -18,11 +21,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import static net.mizugashi.mizugashiFish.utils.Contest.scheduleDailyContest;
+
 public final class MizugashiFish extends JavaPlugin {
 
     public static JavaPlugin plugin;
     public static VaultManager vault;
     public static String prefix = "[§bMizuFishing§r]";
+    public static String permission = "minezero.admin";
     public static List<FishData> common_list = new ArrayList<>();
     public static List<FishData> uncommon_list = new ArrayList<>();
     public static List<FishData> rare_list = new ArrayList<>();
@@ -38,6 +44,9 @@ public final class MizugashiFish extends JavaPlugin {
     public static int super_chance;
     public static int legend_chance;
     public static boolean contest;
+    public static HashMap<String, Double> ranking = new HashMap<>();
+    public static HashMap<String, String> best_fish = new HashMap<>();
+    public static HashMap<Player, Double> best_length = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -48,10 +57,14 @@ public final class MizugashiFish extends JavaPlugin {
         key_fish = new NamespacedKey(plugin, "fish_name");
         key_fish_price = new NamespacedKey(plugin, "fish_price");
         Objects.requireNonNull(getCommand("fish")).setExecutor(new MainCommand());
+        Objects.requireNonNull(getCommand("fish")).setTabCompleter(new TabCompleter());
         Bukkit.getPluginManager().registerEvents(new Fishing(), plugin);
         Bukkit.getPluginManager().registerEvents(new Sell(), plugin);
         contest = false;
-        plugin.getDataFolder().mkdir();
+        if (!plugin.getDataFolder().exists()) {
+            plugin.getDataFolder().mkdir();
+        }
+        saveDefaultConfig();
 
         File file = new File(plugin.getDataFolder().getPath() + "/fish.yml");
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
@@ -71,6 +84,7 @@ public final class MizugashiFish extends JavaPlugin {
         for (String rod_name : rod_config.getKeys(false)) {
             rod_map.put(rod_name, RodSetting.getRodData(rod_name));
         }
+        scheduleDailyContest(plugin.getConfig().getInt("contest_time.hour"), plugin.getConfig().getInt("contest_time.min"), plugin.getConfig().getInt("contest_time.sec"));
     }
 
     @Override

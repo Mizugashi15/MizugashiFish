@@ -17,15 +17,13 @@ public class RodSetting {
 
         data.name = rod_name;
 
-        data.display_name = config.getString("Displayname");
+        data.display_name = config.getString(rod_name + ".Displayname");
 
-        data.lore = config.getStringList("Lore");
+        data.chance = config.getIntegerList(rod_name + ".Chance");
 
-        data.all_chance += data.common = config.getInt("Common");
-        data.all_chance += data.uncommon = config.getInt("Uncommon");
-        data.all_chance += data.rare = config.getInt("Rare");
-        data.all_chance += data.super_rare = config.getInt("SuperRare");
-        data.all_chance += data.legend = config.getInt("Legend");
+        for (int i : data.chance) {
+            data.all_chance += i;
+        }
 
         return data;
     }

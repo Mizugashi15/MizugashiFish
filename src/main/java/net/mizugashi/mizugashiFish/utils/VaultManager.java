@@ -1,4 +1,4 @@
-package net.mizugashi.mizugashiFish;
+package net.mizugashi.mizugashiFish.utils;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;

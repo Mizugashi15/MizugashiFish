@@ -8,13 +8,7 @@ public class RodData {
 
     public String display_name;
 
-    public List<String> lore;
-
-    public int common;
-    public int uncommon;
-    public int rare;
-    public int super_rare;
-    public int legend;
+    public List<Integer> chance;
 
     public int all_chance;
 

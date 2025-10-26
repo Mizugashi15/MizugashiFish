@@ -7,6 +7,7 @@ import net.mizugashi.mizugashiFish.data.FishSetting;
 import net.mizugashi.mizugashiFish.data.RodData;
 import net.mizugashi.mizugashiFish.data.RodSetting;
 import net.mizugashi.mizugashiFish.events.Sell;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,11 +20,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static net.mizugashi.mizugashiFish.MizugashiFish.*;
+import static net.mizugashi.mizugashiFish.utils.Contest.startContest;
+import static net.mizugashi.mizugashiFish.utils.Contest.stopContest;
 
 public class MainCommand implements CommandExecutor {
 
@@ -32,21 +33,50 @@ public class MainCommand implements CommandExecutor {
 
         if (sender instanceof Player player) {
 
+            if (!player.hasPermission(permission)) {
+                player.sendMessage("§cあなたには権限がありません！");
+                return false;
+            }
+
             if (args.length == 1) {
                 if (args[0].equalsIgnoreCase("help")) {
                     player.sendMessage("§7========" + prefix + "§7========");
+                    player.sendMessage("§f/fish §erank");
+                    player.sendMessage("§7➡ コンテスト開催時のランキングを表示します");
+                    player.sendMessage("§f/fish §eshop");
+                    player.sendMessage("§7➡ 魚の販売画面を表示します");
                     player.sendMessage("§f/fish §elist");
                     player.sendMessage("§7➡ 魚のリストを表示します");
                     player.sendMessage("§f/fish §eget [釣り竿名]");
                     player.sendMessage("§7➡ 釣り竿を取得します");
-                    player.sendMessage("§f/fish §eshop");
-                    player.sendMessage("§7➡ 魚の販売画面を表示します");
                     player.sendMessage("§f/fish §ereload");
                     player.sendMessage("§7➡ データファイルを再読み込みします");
                     player.sendMessage("§f/fish §econtest start [秒数]");
                     player.sendMessage("§7➡ 釣りコンテストの開始 秒数指定");
                     player.sendMessage("§f/fish §econtest stop");
                     player.sendMessage("§7➡ 現在開催されているコンテストの強制終了");
+                    player.sendMessage("§f/fish §eitem [prize/join]");
+                    player.sendMessage("§7➡ 手に持ってるアイテムをprize/入賞 join/参加賞のアイテムにする");
+                    return true;
+                }
+                if (args[0].equalsIgnoreCase("rank")) {
+                    if (!contest) {
+                        player.sendMessage(prefix + " §cコンテストは開催されていません！");
+                        return false;
+                    }
+                    player.sendMessage(prefix + " §eコンテストランキング");
+                    int i = 1;
+                    for (Map.Entry<String, Double> entry : ranking.entrySet()) {
+                        player.sendMessage(" §e" + i + "位 : §f" + entry.getKey() + " " + best_fish.get(entry.getKey()));
+                        if (i == 3) break;
+                        i++;
+                    }
+                    player.sendMessage(prefix + " §fあなたの魚");
+                    if (ranking.containsKey(player.getName())) {
+                        player.sendMessage(" " + best_fish.get(player.getName()));
+                    } else {
+                        player.sendMessage(" §cまだ参加していません");
+                    }
                     return true;
                 }
                 if (args[0].equalsIgnoreCase("list")) {
@@ -105,21 +135,22 @@ public class MainCommand implements CommandExecutor {
                     player.openInventory(new Sell().createShopGui());
                     return true;
                 }
+
             }
             if (args.length == 2) {
                 if (args[0].equalsIgnoreCase("get")) {
-                    if (rod_map.containsValue(args[1])) {
+                    if (rod_map.containsKey(args[1])) {
                         ItemStack fish_rod = new ItemStack(Material.FISHING_ROD);
                         ItemMeta meta = fish_rod.getItemMeta();
                         RodData data = rod_map.get(args[1]);
-                        meta.setDisplayName(data.display_name);
-                        meta.setLore(data.lore);
+                        meta.setDisplayName(data.display_name.replace("&", "§"));
                         meta.getPersistentDataContainer().set(key_rod_name, PersistentDataType.STRING, data.name);
                         fish_rod.setItemMeta(meta);
                         player.getInventory().addItem(fish_rod);
                         return true;
                     } else {
                         player.sendMessage(prefix + " §c釣り竿名が存在しません！");
+                        return false;
                     }
                 }
                 if (args[0].equalsIgnoreCase("list")) {
@@ -140,16 +171,32 @@ public class MainCommand implements CommandExecutor {
                 if (args[0].equalsIgnoreCase("contest")) {
                     if (args[1].equalsIgnoreCase("stop")) {
                         if (contest) {
-                            contest = false;
-
+                            stopContest();
                             player.sendMessage(prefix + " §aコンテストを終了しました");
                             return true;
                         } else {
-                            contest = true;
                             player.sendMessage(prefix + " §cコンテストは開催されていません！");
                             return false;
                         }
                     }
+                }
+                if (args[0].equalsIgnoreCase("item")) {
+                    if (player.getInventory().getItemInMainHand().getType().isAir()) {
+                        player.sendMessage(prefix + " §c手にアイテムを持ってください！");
+                        return false;
+                    }
+                    FileConfiguration config = plugin.getConfig();
+                    switch (args[1]) {
+                        case "prize" -> config.set("contest_item.prize", player.getInventory().getItemInMainHand());
+                        case "join" -> config.set("contest_item.join", player.getInventory().getItemInMainHand());
+                        default -> {
+                            player.sendMessage(prefix + " §c使い方が間違っています！");
+                            return false;
+                        }
+                    }
+                    plugin.saveConfig();
+                    player.sendMessage(prefix + " §a登録しました");
+                    return true;
                 }
             }
             if (args.length == 3) {
@@ -157,8 +204,7 @@ public class MainCommand implements CommandExecutor {
                     if (args[1].equalsIgnoreCase("start")) {
                         if (isNumber(args[2])) {
                             if (!contest) {
-                                contest = true;
-
+                                startContest(Integer.parseInt(args[2]));
                                 return true;
                             } else {
                                 player.sendMessage(prefix + " §c既にコンテストが開催されています！");
